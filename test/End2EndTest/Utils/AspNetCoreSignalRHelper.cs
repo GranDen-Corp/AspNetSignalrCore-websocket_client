@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -74,6 +75,16 @@ namespace End2EndTest.Utils
             loggerFactory.AddProvider(new XunitLoggerProvider(testOutputHelper));
             return loggerFactory;
         }
+
+        public static void CallMapHub(this HubRouteBuilder hubRouteBuilder, Type hubClassType, PathString pathString,
+            Action<HttpConnectionDispatcherOptions> configureOptions = null)
+        {
+            Action<PathString, Action<HttpConnectionDispatcherOptions>> action = hubRouteBuilder.MapHub<Hub>;
+
+            var mapHubMethodInfo = action.Method.GetGenericMethodDefinition().MakeGenericMethod(hubClassType);
+
+            mapHubMethodInfo.Invoke(hubRouteBuilder, new object[] {pathString, configureOptions});
+        }
     }
 
     public class DynamicStartup : StartupBase
@@ -92,4 +103,7 @@ namespace End2EndTest.Utils
         public override void Configure(IApplicationBuilder app) => _configureApp(app);
 
     }
+
+    public class StubHub : Hub{}
+    
 }

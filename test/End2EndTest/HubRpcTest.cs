@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using AutoFixture;
 using End2EndTest.Utils;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.SignalR.Client;
@@ -47,7 +48,10 @@ namespace End2EndTest
                 services.AddSignalR(hubOptions => { hubOptions.EnableDetailedErrors = true; });
             });
 
-            var hubRouteBuilder = new Action<HubRouteBuilder>(builder => { builder.MapHub<EchoHub>("/ws"); });
+            var hubRouteBuilder = new Action<HubRouteBuilder>(builder =>
+            {
+                builder.CallMapHub(typeof(EchoHub),"/ws");
+            });
 
             using (var server =
                 AspNetCoreSignalRHelper.CreateTestServer(config, _testOutputHelper, configureService, hubRouteBuilder))
