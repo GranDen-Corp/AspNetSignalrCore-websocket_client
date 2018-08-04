@@ -36,7 +36,7 @@ namespace End2EndTest.Utils
             => NoopDisposable.Instance;
 
         public bool IsEnabled(LogLevel logLevel)
-            => true;
+            => logLevel != LogLevel.None;
 
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception,
             Func<TState, Exception, string> formatter)

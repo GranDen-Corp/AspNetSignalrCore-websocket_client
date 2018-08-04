@@ -19,7 +19,7 @@ namespace End2EndTest
             _testOutputHelper = testOutputHelper;
         }
 
-        public class EchoHub : Hub
+        private class EchoHub : Hub
         {
 #pragma warning disable CS1998
             // ReSharper disable once UnusedMember.Global
