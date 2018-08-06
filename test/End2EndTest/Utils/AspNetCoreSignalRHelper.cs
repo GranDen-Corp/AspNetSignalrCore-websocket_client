@@ -17,7 +17,6 @@ namespace End2EndTest.Utils
         public static IWebHost CreateTestServer(IConfiguration config, ITestOutputHelper testOutputHelper,
             Action<IServiceCollection> configService, Action<HubRouteBuilder> hubRouteBuilder, bool forceHttps = false)
         {
-            
             Action<IApplicationBuilder> startup = builder =>
             {
                 if (forceHttps)
@@ -48,32 +47,33 @@ namespace End2EndTest.Utils
             };
 
             var host = new WebHostBuilder()
-                .ConfigureServices(s => s.AddSingleton(CreateLogFactory(testOutputHelper)))
                 .UseConfiguration(config)
                 .UseKestrel()
                 .ConfigureServices(services =>
-                    {
-                        services.AddSingleton<IStartup>(serviceProvider => new DynamicStartup(configService, startup));
-                    })
+                {
+                    services.AddSingleton<IStartup>(serviceProvider => new DynamicStartup(configService, startup));
+                })
+                .ConfigureLogging((hostingContext, logging) =>
+                {
+                    logging.SetMinimumLevel(LogLevel.Trace);
+                    logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
+                    logging.AddDebug();
+                    logging.AddProvider(new XunitLoggerProvider(testOutputHelper));
+                })
                 .Build();
 
             return host;
         }
-        
+
         public static IConfiguration CreateConfigWithUrl(string url)
         {
             var configBuilder = new ConfigurationBuilder();
             configBuilder.AddInMemoryCollection();
             var config = configBuilder.Build();
             config["server.urls"] = url;
+            config["Logging:LogLevel:Microsoft.AspNetCore.SignalR"] = "Trace";
+            config["Logging:LogLevel:Microsoft.AspNetCore.Http.Connections"] = "Debug";
             return config;
-        }
-
-        private static ILoggerFactory CreateLogFactory(ITestOutputHelper testOutputHelper)
-        {
-            var loggerFactory = new LoggerFactory();
-            loggerFactory.AddProvider(new XunitLoggerProvider(testOutputHelper));
-            return loggerFactory;
         }
 
         public static void CallMapHub(this HubRouteBuilder hubRouteBuilder, Type hubClassType, PathString pathString,
@@ -101,9 +101,9 @@ namespace End2EndTest.Utils
         public override void ConfigureServices(IServiceCollection services) => _configureService(services);
 
         public override void Configure(IApplicationBuilder app) => _configureApp(app);
-
     }
 
-    public class StubHub : Hub{}
-    
+    public class StubHub : Hub
+    {
+    }
 }
