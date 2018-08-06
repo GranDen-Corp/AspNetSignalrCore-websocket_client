@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Dynamic;
 using System.Threading.Tasks;
-using AutoFixture;
 using End2EndTest.Utils;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.SignalR.Client;
@@ -10,27 +10,13 @@ using Xunit.Abstractions;
 
 namespace End2EndTest
 {
-    public class HubRpcTest
+    public partial class HubRpcTest
     {
         private readonly ITestOutputHelper _testOutputHelper;
 
         public HubRpcTest(ITestOutputHelper testOutputHelper)
         {
             _testOutputHelper = testOutputHelper;
-        }
-
-        public class EchoHub : Hub
-        {
-#pragma warning disable CS1998
-            // ReSharper disable once UnusedMember.Global
-            public async Task<string> EchoWithJsonFormat(string message)
-                // ReSharper restore UnusedMember.Global 
-#pragma warning restore CS1998
-            {
-                var sendStr = $"{{\"recv\": \"{message}\"}}";
-
-                return sendStr;
-            }
         }
 
         [Fact]
@@ -45,12 +31,22 @@ namespace End2EndTest
 
             var configureService = new Action<IServiceCollection>(services =>
             {
+                dynamic assertInjector = new ExpandoObject();
+                assertInjector.TestEcho = new Func<string,Task<string> >(async (input) =>
+                {
+                    var sendStr = $"{{\"recv\": \"{input}\"}}";
+                    serverTestComplte = true;
+                    return sendStr;
+                });
+
+                services.AddScoped<IAssertInjector>(provider =>  new AssertInjector(assertInjector));
+                
                 services.AddSignalR(hubOptions => { hubOptions.EnableDetailedErrors = true; });
             });
 
             var hubRouteBuilder = new Action<HubRouteBuilder>(builder =>
             {
-                builder.CallMapHub(typeof(EchoHub),"/ws");
+                builder.CallMapHub(typeof(MockHub),"/ws");
             });
 
             using (var server =
@@ -62,9 +58,10 @@ namespace End2EndTest
                     .Build();
 
                 await connection.StartAsync();
-                var recv = await connection.InvokeAsync<string>("EchoWithJsonFormat", message);
+                var recv = await connection.InvokeAsync<string>("TestEcho", message);
                 Assert.Equal($"{{\"recv\": \"{message}\"}}", recv);
             }
+            Assert.True(serverTestComplte, "server verification failed");
         }
     }
 }
