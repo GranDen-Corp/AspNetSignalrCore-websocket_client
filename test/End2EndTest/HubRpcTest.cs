@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Dynamic;
 using System.Threading.Tasks;
 using End2EndTest.Utils;
 using Microsoft.AspNetCore.SignalR;
