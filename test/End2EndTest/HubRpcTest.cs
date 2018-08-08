@@ -22,7 +22,6 @@ namespace End2EndTest
         [Fact]
         public async Task ClientConnectTestServerCanInvokeRpcAndGetResult()
         {
-            const string clientAddress = "ws://localhost:54321/ws";
             const string serverAddress = "http://localhost:54321";
             var serverTestComplte = false;
             const string message = "Hello World";
@@ -34,6 +33,7 @@ namespace End2EndTest
                 dynamic assertInjector = new ExpandoObject();
                 assertInjector.TestEcho = new Func<string,Task<string> >(async (input) =>
                 {
+                    Assert.Equal(message, input);
                     var sendStr = $"{{\"recv\": \"{input}\"}}";
                     serverTestComplte = true;
                     return sendStr;
@@ -57,8 +57,8 @@ namespace End2EndTest
                     .WithUrl($"{serverAddress}/ws")
                     .Build();
 
-                await connection.StartAsync();
-                var recv = await connection.InvokeAsync<string>("TestEcho", message);
+                await connection.StartAsync().OrTimeout();
+                var recv = await connection.InvokeAsync<string>("TestEcho", message).OrTimeout();
                 Assert.Equal($"{{\"recv\": \"{message}\"}}", recv);
             }
             Assert.True(serverTestComplte, "server verification failed");

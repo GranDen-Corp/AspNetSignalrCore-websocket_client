@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{5F444423-364A-4053-9BFC-BEE1C050E211}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GranDen.AspNet.SignalR.Client.WebSocketSharp", "src\GranDen.AspNet.SignalR.Client.WebSocketSharp\GranDen.AspNet.SignalR.Client.WebSocketSharp.csproj", "{7D2F3752-190D-4D69-9570-1F8166C0BC8B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GranDen.AspNet.SignalR.Client.WebSocketSharpClient", "src\GranDen.AspNet.SignalR.Client.WebSocketSharpClient\GranDen.AspNet.SignalR.Client.WebSocketSharpClient.csproj", "{7D2F3752-190D-4D69-9570-1F8166C0BC8B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{0E94A949-B66D-41D1-A22F-9A2C8D2E8713}"
 EndProject

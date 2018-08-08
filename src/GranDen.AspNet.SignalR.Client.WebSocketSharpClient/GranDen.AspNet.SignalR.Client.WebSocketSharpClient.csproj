@@ -1,0 +1,9 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Serilog" Version="2.7.1" />
+    <PackageReference Include="WebSocketSharp-client" Version="1.0.0-beta20180727" />
+  </ItemGroup>
+</Project>

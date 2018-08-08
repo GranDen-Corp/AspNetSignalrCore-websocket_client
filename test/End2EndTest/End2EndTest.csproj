@@ -20,6 +20,6 @@
     <PackageReference Include="xunit.runner.console" Version="2.4.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\GranDen.AspNet.SignalR.Client.WebSocketSharp\GranDen.AspNet.SignalR.Client.WebSocketSharp.csproj" />
+    <ProjectReference Include="..\..\src\GranDen.AspNet.SignalR.Client.WebSocketSharpClient\GranDen.AspNet.SignalR.Client.WebSocketSharpClient.csproj" />
   </ItemGroup>
 </Project>
