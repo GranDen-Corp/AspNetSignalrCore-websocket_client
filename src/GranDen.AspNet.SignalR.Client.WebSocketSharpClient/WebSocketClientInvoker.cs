@@ -11,8 +11,7 @@ namespace GranDen.AspNet.SignalR.Client.WebSocketSharpClient
 
         public WebSocketClientInvoker(string url)
         {
-            _webSocket = new WebSocket(url) {EnableRedirection = true};
-            _webSocket.Log 
+            _webSocket = new WebSocket(url, CreateLogger()) {EnableRedirection = true};
         }
 
         ~WebSocketClientInvoker()
@@ -33,11 +32,16 @@ namespace GranDen.AspNet.SignalR.Client.WebSocketSharpClient
             _webSocket.Close();
         }
         
-       #endregion 
-        
-        
-        
-        
+       #endregion
 
+
+        private WebSocketSharp.Logger CreateLogger()
+        {
+            return new WebSocketSharp.Logger(WebSocketSharp.LogLevel.Debug, null, (logData, _) =>
+            {
+                _logger.Debug(logData.Message);
+            });
+        }
+        
     }
 }

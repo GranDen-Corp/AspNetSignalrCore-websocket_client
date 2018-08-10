@@ -5,23 +5,12 @@ namespace End2EndTest
 {
     public partial class HubRpcTest
     {
-        private interface IAssertInjector
+        //for ImproptuInterface
+        // ReSharper disable once MemberCanBePrivate.Global
+        public interface IAssertInjector
+        // ReSharper restore MemberCanBePrivate.Global
         {
             Task<string> TestEcho(string message);
-        }
-
-        private class AssertInjector : IAssertInjector
-        {
-            private dynamic _methodInvoker;
-            public AssertInjector(dynamic methodInvoker)
-            {
-                _methodInvoker = methodInvoker;
-            }
-
-            public async Task<string> TestEcho(string message)
-            {
-                return await _methodInvoker.TestEcho(message);
-            }
         }
         
         private class MockHub : Hub, IAssertInjector

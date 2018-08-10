@@ -2,6 +2,7 @@
 using System.Dynamic;
 using System.Threading.Tasks;
 using End2EndTest.Utils;
+using ImpromptuInterface;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.DependencyInjection;
@@ -30,8 +31,8 @@ namespace End2EndTest
 
             var configureService = new Action<IServiceCollection>(services =>
             {
-                dynamic assertInjector = new ExpandoObject();
-                assertInjector.TestEcho = new Func<string,Task<string> >(async (input) =>
+                dynamic expandoObject = new ExpandoObject();
+                expandoObject.TestEcho = new Func<string,Task<string> >(async (input) =>
                 {
                     Assert.Equal(message, input);
                     var sendStr = $"{{\"recv\": \"{input}\"}}";
@@ -39,7 +40,7 @@ namespace End2EndTest
                     return sendStr;
                 });
 
-                services.AddScoped<IAssertInjector>(provider =>  new AssertInjector(assertInjector));
+                services.AddScoped<IAssertInjector>(provider =>  Impromptu.ActLike<IAssertInjector>(expandoObject));
                 
                 services.AddSignalR(hubOptions => { hubOptions.EnableDetailedErrors = true; });
             });

@@ -4,6 +4,6 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Serilog" Version="2.7.1" />
-    <PackageReference Include="WebSocketSharp-client" Version="1.0.0-beta20180727" />
+    <PackageReference Include="WebSocketSharp-client" Version="1.0.0-beta20180809" />
   </ItemGroup>
 </Project>
